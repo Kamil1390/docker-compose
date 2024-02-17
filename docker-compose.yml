@@ -9,6 +9,10 @@ services:
     build: ./Postgres
     ports:
       - '5432:5432'
+    environment:
+      - POSTGRES_DB=Kamil
+      - POSTGRES_USER=f_base
+      - POSTGRES_PASSWORD=12345
     networks:
       - mynetwork
 
