@@ -3,18 +3,19 @@ import psycopg2
 import socket
 import time
 from typing import List
+import os
 
 
 rabbitmq_parametrs = {
-    'host': 'rabbit',
-    'port': '5672',
+    'host': os.environ['RABBITMQ_HOST'],
+    'port': int(os.environ['RABBITMQ_PORT']),
 }
 
 db_parametrs = {
-    'host': 'postgres',
-    'database': 'POSTGRES_DB',
-    'user': 'POSTGRES_USER',
-    'password': 'POSTGRES_PASSWORD',
+    'host': os.environ['POSTGRES_HOST'],
+    'database': os.environ['POSTGRES_DB'],
+    'user': int(os.environ['POSTGRES_PORT']),
+    'password': os.environ['POSTGRES_PASSWORD'],
 }
 
 
@@ -69,9 +70,10 @@ def callback(ch, method, properties, body: str) -> None:
     write_to_database(message)
 
 
-wait_for_service('rabbit', 5672)
+wait_for_service('rabbitmq', 5672)
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(**rabbitmq_parametrs))
 chanel = connection.channel()
 chanel.queue_declare(queue='python-queue')
 chanel.basic_consume(queue='python-queue',

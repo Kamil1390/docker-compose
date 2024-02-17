@@ -1,36 +1,32 @@
 version: '3.9'
-
-networks:
-  mynetwork:
-    driver: bridge
-
 services:
+  rabbitmq:
+    image: "rabbitmq:3.12-management"
+    ports:
+      - "5672:5672" # порт для AMQP
+      - "15672:15672" # порт для веб-панели управления
+
   postgres:
-    build: ./Postgres
+    image: "postgres:latest"
     ports:
-      - '5432:5432'
+      - "5432:5432" # порт PostgreSQL
     environment:
-      - POSTGRES_DB=Kamil
-      - POSTGRES_USER=f_base
-      - POSTGRES_PASSWORD=12345
-    networks:
-      - mynetwork
+      POSTGRES_USER: Kamil
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: f_base
 
-  rabbit:
-    image: rabbitmq:3.12-management
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    networks:
-      - mynetwork
-
-  app:
+  python-app:
     build: ./Python-app
     depends_on:
+      - rabbitmq
       - postgres
-      - rabbit
-    networks:
-      - mynetwork
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5431"
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: f_base
