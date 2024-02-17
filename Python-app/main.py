@@ -1,6 +1,5 @@
 import pika
 import psycopg2
-import socket
 import time
 from typing import List
 import os
@@ -14,27 +13,9 @@ rabbitmq_parametrs = {
 db_parametrs = {
     'host': os.environ['POSTGRES_HOST'],
     'database': os.environ['POSTGRES_DB'],
-    'user': int(os.environ['POSTGRES_PORT']),
+    'user': os.environ['POSTGRES_USER'],
     'password': os.environ['POSTGRES_PASSWORD'],
 }
-
-
-def wait_for_service(host, port, max_attempts=30, timeout=1):
-    attempts = 0
-    while attempts < max_attempts:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex((host, port))
-        sock.close()
-        if result == 0:
-            print(f"Service {host}:{port} is available.")
-            return True
-        else:
-            attempts += 1
-            print(
-                f"Attempt {attempts}/{max_attempts} failed. Retrying in {timeout} second(s).")
-            time.sleep(timeout)
-    raise Exception(
-        f"Failed to connect to {host}:{port} after multiple attempts.")
 
 
 def write_to_database(mesage: List[str]) -> None:
@@ -70,10 +51,10 @@ def callback(ch, method, properties, body: str) -> None:
     write_to_database(message)
 
 
-wait_for_service('rabbitmq', 5672)
-
+time.sleep(30)
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(**rabbitmq_parametrs))
+print('Begin')
 chanel = connection.channel()
 chanel.queue_declare(queue='python-queue')
 chanel.basic_consume(queue='python-queue',

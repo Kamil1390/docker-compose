@@ -29,6 +29,6 @@ services:
       RABBITMQ_PASSWORD: guest
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5431"
-      POSTGRES_USER: user
+      POSTGRES_USER: Kamil
       POSTGRES_PASSWORD: "12345"
       POSTGRES_DB: f_base

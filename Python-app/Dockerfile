@@ -10,4 +10,4 @@ RUN pip install pika
 COPY . .
 
 
-CMD [ "python3.11", "main.py" ]
+CMD [ "python3", "main.py" ]
