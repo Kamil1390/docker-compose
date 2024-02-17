@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: "12345"
       POSTGRES_DB: f_base
     volumes:
-      - ./Postgres/.:/docker-entrypoint-initdb.d
+      - ./Postgres/:/docker-entrypoint-initdb.d
 
   python-app:
     build: ./Python-app
