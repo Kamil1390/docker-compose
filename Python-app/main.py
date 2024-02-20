@@ -46,7 +46,10 @@ def write_to_database(mesage: List[str]) -> None:
         print(f"Error: {ex}")
 
 
-def callback(ch, method, properties, body: str) -> None:
+def callback(
+        ch: pika.Channel, method: pika.spec.Basic.Deliver,
+        properties: pika.BasicProperties, body: bytes
+) -> None:
     message = body.decode('utf-8').split(',')
     write_to_database(message)
 
@@ -54,7 +57,6 @@ def callback(ch, method, properties, body: str) -> None:
 time.sleep(30)
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(**rabbitmq_parametrs))
-print('Begin')
 chanel = connection.channel()
 chanel.queue_declare(queue='python-queue')
 chanel.basic_consume(queue='python-queue',

@@ -9,7 +9,7 @@ services:
   postgres:
     image: "postgres:latest"
     ports:
-      - "5432:5432" # порт PostgreSQL
+      - "5431:5432" # порт PostgreSQL
     environment:
       POSTGRES_USER: Kamil
       POSTGRES_PASSWORD: "12345"
